@@ -28,15 +28,37 @@ func TestLoggingReporterImplementsReporter(t *testing.T) {
 	assert.Implements(t, (*Reporter)(nil), &LoggingReporter{})
 }
 
-func TestNewLoggingReporter(t *testing.T) {
+func TestNewLoggingReporterBase(t *testing.T) {
 	out := &log.Logger{}
 	rep := &MockReporter{}
+	defer patcher.SetVar(&newFormatters, func(opts ...FormatOption) *Formatters {
+		assert.Len(t, opts, 0)
+		return &Formatters{}
+	}).Install().Restore()
 
 	result := NewLoggingReporter(out, rep)
 
 	assert.Equal(t, &LoggingReporter{
-		out: out,
-		rep: rep,
+		out:    out,
+		rep:    rep,
+		format: &Formatters{},
+	}, result)
+}
+
+func TestNewLoggingReporterOptions(t *testing.T) {
+	out := &log.Logger{}
+	rep := &MockReporter{}
+	defer patcher.SetVar(&newFormatters, func(opts ...FormatOption) *Formatters {
+		assert.Len(t, opts, 2)
+		return &Formatters{}
+	}).Install().Restore()
+
+	result := NewLoggingReporter(out, rep, FormatError("e:%s"), FormatWarning("w:%s"))
+
+	assert.Equal(t, &LoggingReporter{
+		out:    out,
+		rep:    rep,
+		format: &Formatters{},
 	}, result)
 }
 
@@ -68,8 +90,9 @@ func TestLoggingReporterReportError(t *testing.T) {
 	stream := &bytes.Buffer{}
 	out := log.New(stream, "", 0)
 	obj := &LoggingReporter{
-		out: out,
-		rep: rep,
+		out:    out,
+		rep:    rep,
+		format: NewFormatters(),
 	}
 
 	obj.Report(assert.AnError)
@@ -85,8 +108,9 @@ func TestLoggingReporterReportWarning(t *testing.T) {
 	stream := &bytes.Buffer{}
 	out := log.New(stream, "", 0)
 	obj := &LoggingReporter{
-		out: out,
-		rep: rep,
+		out:    out,
+		rep:    rep,
+		format: NewFormatters(),
 	}
 
 	obj.Report(err)

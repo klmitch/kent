@@ -15,7 +15,6 @@
 package kent
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -24,18 +23,22 @@ import (
 // log.Logger.  If no log.Logger is specified, the default logger will
 // be used.
 type LoggingReporter struct {
-	out *log.Logger // The logger to emit to
-	rep Reporter    // Child reporter
+	out    *log.Logger // The logger to emit to
+	rep    Reporter    // Child reporter
+	format *Formatters // Formatters to use
 }
 
 // NewLoggingReporter constructs a new logging reporter.  A logging
 // reporter emits error and warning messages to a specified logger, or
 // the default logger if the logger argument is nil; an appropriate
 // "ERROR:" or "WARNING:" prefix is included in the emitted message.
-func NewLoggingReporter(logger *log.Logger, rep Reporter) *LoggingReporter {
+// To use different formats for errors and warnings, pass appropriate
+// formatting options, such as FormatError or FormatWarning.
+func NewLoggingReporter(logger *log.Logger, rep Reporter, formatOptions ...FormatOption) *LoggingReporter {
 	return &LoggingReporter{
-		out: logger,
-		rep: rep,
+		out:    logger,
+		rep:    rep,
+		format: newFormatters(formatOptions...),
 	}
 }
 
@@ -55,14 +58,7 @@ func (lr *LoggingReporter) emit(msg string) {
 // implementation uses, and passes on the error to the wrapped
 // Reporter.
 func (lr *LoggingReporter) Report(err error) {
-	var prefix string
-	if IsWarning(err) {
-		prefix = "WARNING"
-	} else {
-		prefix = "ERROR"
-	}
-
-	lr.emit(fmt.Sprintf("%s: %s", prefix, err))
+	lr.emit(lr.format.Format(err))
 
 	lr.rep.Report(err)
 }

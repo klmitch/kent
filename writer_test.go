@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/klmitch/patcher"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,15 +27,37 @@ func TestWritingReporterImplementsReporter(t *testing.T) {
 	assert.Implements(t, (*Reporter)(nil), &WritingReporter{})
 }
 
-func TestNewWritingReporter(t *testing.T) {
+func TestNewWritingReporterBase(t *testing.T) {
 	out := &bytes.Buffer{}
 	rep := &MockReporter{}
+	defer patcher.SetVar(&newFormatters, func(opts ...FormatOption) *Formatters {
+		assert.Len(t, opts, 0)
+		return &Formatters{}
+	}).Install().Restore()
 
 	result := NewWritingReporter(out, rep)
 
 	assert.Equal(t, &WritingReporter{
-		out: out,
-		rep: rep,
+		out:    out,
+		rep:    rep,
+		format: &Formatters{},
+	}, result)
+}
+
+func TestNewWritingReporterOptions(t *testing.T) {
+	out := &bytes.Buffer{}
+	rep := &MockReporter{}
+	defer patcher.SetVar(&newFormatters, func(opts ...FormatOption) *Formatters {
+		assert.Len(t, opts, 2)
+		return &Formatters{}
+	}).Install().Restore()
+
+	result := NewWritingReporter(out, rep, FormatError("e:%s"), FormatWarning("w:%s"))
+
+	assert.Equal(t, &WritingReporter{
+		out:    out,
+		rep:    rep,
+		format: &Formatters{},
 	}, result)
 }
 
@@ -43,8 +66,9 @@ func TestWritingReporterReportError(t *testing.T) {
 	rep.On("Report", assert.AnError)
 	out := &bytes.Buffer{}
 	obj := &WritingReporter{
-		out: out,
-		rep: rep,
+		out:    out,
+		rep:    rep,
+		format: NewFormatters(),
 	}
 
 	obj.Report(assert.AnError)
@@ -59,8 +83,9 @@ func TestWritingReporterReportWarning(t *testing.T) {
 	rep.On("Report", err)
 	out := &bytes.Buffer{}
 	obj := &WritingReporter{
-		out: out,
-		rep: rep,
+		out:    out,
+		rep:    rep,
+		format: NewFormatters(),
 	}
 
 	obj.Report(err)

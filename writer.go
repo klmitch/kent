@@ -23,18 +23,22 @@ import (
 // an appropriate "ERROR:" and "WARNING:" prefix) to a specified
 // io.Writer stream.
 type WritingReporter struct {
-	out io.Writer // The output stream to write to
-	rep Reporter  // Child reporter
+	out    io.Writer   // The output stream to write to
+	rep    Reporter    // Child reporter
+	format *Formatters // Formatters to use
 }
 
 // NewWritingReporter constructs a new writing reporter.  A writing
 // reporter emits error and warning messages to a specified output
 // stream (an io.Writer) with appropriate "ERROR:" and "WARNING:"
-// prefixes.
-func NewWritingReporter(out io.Writer, rep Reporter) *WritingReporter {
+// prefixes.  To use different formats for errors and warnings, pass
+// appropriate formatting options, such as FormatError or
+// FormatWarning.
+func NewWritingReporter(out io.Writer, rep Reporter, formatOptions ...FormatOption) *WritingReporter {
 	return &WritingReporter{
-		out: out,
-		rep: rep,
+		out:    out,
+		rep:    rep,
+		format: newFormatters(formatOptions...),
 	}
 }
 
@@ -43,14 +47,7 @@ func NewWritingReporter(out io.Writer, rep Reporter) *WritingReporter {
 // implementation uses, and passes on the error to the wrapped
 // Reporter.
 func (wr *WritingReporter) Report(err error) {
-	var prefix string
-	if IsWarning(err) {
-		prefix = "WARNING"
-	} else {
-		prefix = "ERROR"
-	}
-
-	fmt.Fprintf(wr.out, "%s: %s\n", prefix, err)
+	fmt.Fprintln(wr.out, wr.format.Format(err))
 
 	wr.rep.Report(err)
 }

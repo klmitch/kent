@@ -90,6 +90,18 @@ emits the error or warning, with the same prefix as for
 ``WritingReporter``, but sends the message to either the default
 ``log.Logger`` or to a specified ``log.Logger`` instance.
 
+Reporter Options
+----------------
+
+The ``LoggingReporter`` and ``WritingReporter`` constructors,
+``NewWritingReporter`` and ``NewLoggingReporter``, accept options that
+can be used to control how the errors and warnings are formatted.  Use
+``FormatError`` and ``FormatWarning`` to use a simple format string,
+or for ultimate control over the formatting, use ``FormatErrorFunc``
+and ``FormatWarningFunc`` to specify a function that takes as its sole
+argument an ``error`` and must return the formatted error as a
+``string``.
+
 Mocking Reporters
 =================
 

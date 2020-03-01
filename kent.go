@@ -32,6 +32,15 @@
 // dynamic addition of additional reporters.  Additionally, a
 // MockReporter is provided to facilitate testing of code that uses or
 // manipulates Reporter instances.
+//
+// Both NewLoggingReporter and NewWritingReporter accept options of
+// type FormatOption.  These options can be used to specify how the
+// errors or warnings should be formatted for emission to the
+// log.Logger or the io.Writer, respectively, overriding the prefixes
+// described above.  The available format options allow setting a
+// simple format string with FormatError and FormatWarning, or setting
+// a function which takes the error and returns a string with
+// FormatErrorFunc and FormatWarningFunc.
 package kent
 
 import (
