@@ -12,6 +12,26 @@
 // implied.  See the License for the specific language governing
 // permissions and limitations under the License.
 
+// Package kent facilitates reporting of errors and warnings from deep
+// within a call heirarchy.  The package is based on the Reporter
+// interface, which allows reporting an error by calling the Report
+// method.  All reporters also pass calls to Report on to their
+// children, which are set up at the time the reporter is
+// instantiated, allowing chains of reporters with various
+// functionality.  An As function, similar to errors.As, allows a
+// specific reporter to be selected from the chain, allowing access to
+// additional methods that may be defined for some reporters, such as
+// CountingReporter.
+//
+// Several Reporter implementations are provided, including
+// CountingReporter, which counts errors and warnings;
+// WritingReporter, which emits messages to an io.Writer with "ERROR:"
+// and "WARNING:" prefixes; LoggingReporter, which is similar to
+// WritingReporter except that it writes to a log.Logger; and
+// TeeReporter, which allows writing to parallel reporters, with
+// dynamic addition of additional reporters.  Additionally, a
+// MockReporter is provided to facilitate testing of code that uses or
+// manipulates Reporter instances.
 package kent
 
 import (
