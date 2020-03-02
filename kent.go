@@ -27,11 +27,12 @@
 // CountingReporter, which counts errors and warnings;
 // WritingReporter, which emits messages to an io.Writer with "ERROR:"
 // and "WARNING:" prefixes; LoggingReporter, which is similar to
-// WritingReporter except that it writes to a log.Logger; and
-// TeeReporter, which allows writing to parallel reporters, with
-// dynamic addition of additional reporters.  Additionally, a
-// MockReporter is provided to facilitate testing of code that uses or
-// manipulates Reporter instances.
+// WritingReporter except that it writes to a log.Logger; TeeReporter,
+// which allows writing to parallel reporters, with dynamic addition
+// of additional reporters; and CapturingReporter, which allows
+// capturing the list of reported errors passed to the reporter.
+// Additionally, a MockReporter is provided to facilitate testing of
+// code that uses or manipulates Reporter instances.
 //
 // Both NewLoggingReporter and NewWritingReporter accept options of
 // type FormatOption.  These options can be used to specify how the

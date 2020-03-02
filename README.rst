@@ -78,6 +78,15 @@ to its child, the ``CountingReporter`` does nothing else with those
 errors and warnings.  The number of errors can be retrieved using the
 ``Errors`` method, and ``Warnings`` returns the number of warnings.
 
+The ``CapturingReporter``, constructed with a call to
+``NewCapturingReporter``, constructs a ``Reporter`` implementation
+that captures the list of reported errors and warnings; this list can
+be retrieved with a call to the ``List`` method.  The
+``CapturingReporter`` implements an optional size cap, and can use
+either a "discard first" policy in the event of an overflow, or can
+simply discard the newly reported error.  (The error is always passed
+on to the child reporter, regardless.)
+
 The ``WritingReporter``, constructed with a call to
 ``NewWritingReporter``, constructs a ``Reporter`` implementation that
 emits the error or warning--with a prefix consisting of "ERROR:" or
