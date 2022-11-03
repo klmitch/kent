@@ -78,7 +78,7 @@ func WarningWrap(err error) error {
 // warnings.
 func Warningf(format string, args ...interface{}) error {
 	// Use Errorf to do the work
-	tmp := fmt.Errorf(format, args...)
+	tmp := fmt.Errorf(format, args...) //nolint:goerr113
 
 	// Now make it a warning
 	return &stringWarning{

@@ -21,7 +21,7 @@ import (
 
 // newFormatters is a patch point to allow the client Reporter
 // instances to be tested in isolation from NewFormatters.
-var newFormatters func(...FormatOption) *Formatters = NewFormatters
+var newFormatters = NewFormatters
 
 // FormatFunc describes a function that formats an error or warning.
 // It will be passed the error and must return a string that will be

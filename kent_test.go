@@ -37,7 +37,7 @@ func TestAsNotFound(t *testing.T) {
 	rep := &MockReporter{}
 	rep.On("Unwrap").Return([]Reporter{})
 
-	var target *rootReporter = root
+	target := root
 	result := As(rep, &target)
 
 	assert.False(t, result)

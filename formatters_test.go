@@ -23,7 +23,7 @@ import (
 )
 
 func TestFormatFromString(t *testing.T) {
-	err := errors.New("test error")
+	err := errors.New("test error") //nolint:goerr113
 
 	fmtFunc := formatFromString("test: %s")
 	result := fmtFunc(err)
@@ -32,7 +32,7 @@ func TestFormatFromString(t *testing.T) {
 }
 
 func TestFormatError(t *testing.T) {
-	err := errors.New("test error")
+	err := errors.New("test error") //nolint:goerr113
 	obj := &Formatters{}
 
 	opt := FormatError("test: %s\n\n")
@@ -44,7 +44,7 @@ func TestFormatError(t *testing.T) {
 }
 
 func TestFormatErrorFunc(t *testing.T) {
-	err := errors.New("test error")
+	err := errors.New("test error") //nolint:goerr113
 	fmtFuncCalled := false
 	fmtFunc := func(fErr error) string {
 		assert.Same(t, err, fErr)
@@ -108,7 +108,7 @@ func TestNewFormatters(t *testing.T) {
 	result := NewFormatters(options...)
 
 	require.NotNil(t, result.errors)
-	assert.Equal(t, "ERROR: test error", result.errors(errors.New("test error")))
+	assert.Equal(t, "ERROR: test error", result.errors(errors.New("test error"))) //nolint:goerr113
 	require.NotNil(t, result.warnings)
 	assert.Equal(t, "WARNING: test warning", result.warnings(NewWarning("test warning")))
 	assert.Same(t, result, opt1Called)
@@ -127,7 +127,7 @@ func TestFormattersFormatWarning(t *testing.T) {
 }
 
 func TestFormattersFormatError(t *testing.T) {
-	err := errors.New("test error")
+	err := errors.New("test error") //nolint:goerr113
 	obj := &Formatters{
 		errors: formatFromString("ERROR: %s"),
 	}

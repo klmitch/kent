@@ -84,7 +84,7 @@ func TestCapturingReporterReportBase(t *testing.T) {
 }
 
 func TestCapturingReporterReportOverflowDiscardFirst(t *testing.T) {
-	err := errors.New("test error")
+	err := errors.New("test error") //nolint:goerr113
 	rep := &MockReporter{}
 	rep.On("Report", err)
 	obj := &CapturingReporter{
@@ -101,7 +101,7 @@ func TestCapturingReporterReportOverflowDiscardFirst(t *testing.T) {
 }
 
 func TestCapturingReporterReportOverflow(t *testing.T) {
-	err := errors.New("test error")
+	err := errors.New("test error") //nolint:goerr113
 	rep := &MockReporter{}
 	rep.On("Report", err)
 	obj := &CapturingReporter{

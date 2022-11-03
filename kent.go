@@ -13,7 +13,7 @@
 // permissions and limitations under the License.
 
 // Package kent facilitates reporting of errors and warnings from deep
-// within a call heirarchy.  The package is based on the Reporter
+// within a call hierarchy.  The package is based on the Reporter
 // interface, which allows reporting an error by calling the Report
 // method.  All reporters also pass calls to Report on to their
 // children, which are set up at the time the reporter is
@@ -107,7 +107,7 @@ func As(rep Reporter, target interface{}) bool {
 
 		// OK, add the children to the work queue
 		children := item.Unwrap()
-		if children != nil && len(children) > 0 {
+		if len(children) > 0 {
 			for _, child := range children {
 				q.PushBack(child)
 			}
